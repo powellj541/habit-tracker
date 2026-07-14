@@ -94,14 +94,14 @@ export default function WeeklyView() {
   const reward = data.weeklyReward?.[weekKey] || '';
 
   return (
-    <div className="h-full overflow-y-auto p-6 space-y-6">
-      <div className="flex items-center gap-4">
+    <div className="h-full overflow-y-auto p-4 sm:p-6 space-y-6">
+      <div className="flex items-center gap-4 flex-wrap">
         <h2 className="text-xl font-bold text-white">Weekly View</h2>
         <span className="text-slate-400 text-sm">{weekDays[0]?.key} — {weekDays[6]?.key}</span>
       </div>
 
       {/* Weekly intention fields */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-[#1e293b] rounded-2xl p-4">
           <div className="text-xs text-cyan-400 font-semibold mb-2">🎯 Weekly Focus</div>
           <textarea
@@ -135,7 +135,7 @@ export default function WeeklyView() {
       </div>
 
       {/* Day rings */}
-      <div className="grid grid-cols-7 gap-3">
+      <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 sm:gap-3">
         {weekDays.map(day => {
           const { done, total } = getDayStats(day);
           const isToday = day.key === todayKey;
@@ -147,7 +147,7 @@ export default function WeeklyView() {
       </div>
 
       {/* Day columns with habits + tasks */}
-      <div className="grid grid-cols-7 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3">
         {weekDays.map(day => {
           const dk = day.key;
           const isToday = dk === todayKey;

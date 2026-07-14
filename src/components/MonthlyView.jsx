@@ -57,6 +57,8 @@ export default function MonthlyView() {
   const [modal, setModal] = useState(null);
   const [contextMenu, setContextMenu] = useState(null);
   const [hideFuture, setHideFuture] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [moodPicker, setMoodPicker] = useState(null); // dateKey of open picker
   const [focusCell, setFocusCell] = useState(null); // { row, col } into activeHabits x visibleDays
   const scrollRef = useRef(null);
   const todayColRef = useRef(null);
@@ -156,11 +158,21 @@ export default function MonthlyView() {
   };
 
   return (
-    <div className="flex h-full min-h-0">
-      {/* Sidebar */}
-      <div className="w-56 shrink-0 bg-[#1e293b] border-r border-[#334155] flex flex-col">
+    <div className="flex h-full min-h-0 relative">
+      {/* Mobile backdrop */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={() => setSidebarOpen(false)} />
+      )}
+
+      {/* Sidebar: static on desktop, slide-out drawer on mobile */}
+      <div className={`w-64 md:w-56 shrink-0 bg-[#1e293b] border-r border-[#334155] flex flex-col
+        fixed inset-y-0 left-0 z-40 transform transition-transform md:static md:transform-none
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
         <div className="p-4 border-b border-[#334155]">
-          <div className="text-xs text-slate-400 uppercase tracking-wider mb-2">Habits</div>
+          <div className="flex items-center mb-2">
+            <div className="text-xs text-slate-400 uppercase tracking-wider">Habits</div>
+            <button onClick={() => setSidebarOpen(false)} className="ml-auto md:hidden text-slate-400 hover:text-white text-lg leading-none">×</button>
+          </div>
           <button onClick={() => setModal('add')}
             className="w-full py-2 rounded-xl bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 text-sm font-medium transition">
             + Add Habit
@@ -187,7 +199,7 @@ export default function MonthlyView() {
                           <button
                             onClick={e => { e.stopPropagation(); setModal(habit); }}
                             title="Edit habit"
-                            className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-cyan-400 transition text-sm shrink-0"
+                            className="opacity-100 md:opacity-0 md:group-hover:opacity-100 text-slate-400 hover:text-cyan-400 transition text-sm shrink-0"
                           >✏️</button>
                         </div>
                       )}
@@ -199,7 +211,7 @@ export default function MonthlyView() {
             )}
           </Droppable>
         </DragDropContext>
-        <div className="p-3 border-t border-[#334155] text-[10px] text-slate-500 leading-relaxed">
+        <div className="hidden md:block p-3 border-t border-[#334155] text-[10px] text-slate-500 leading-relaxed">
           Click grid, then use <span className="text-slate-300">↑↓←→</span> to move and <span className="text-slate-300">Space</span> to check.
         </div>
       </div>
@@ -207,11 +219,15 @@ export default function MonthlyView() {
       {/* Main */}
       <div className="flex-1 overflow-auto min-w-0" ref={scrollRef}>
         {/* Month selector */}
-        <div className="sticky top-0 z-10 bg-[#0f172a] border-b border-[#334155] px-4 py-3 flex items-center gap-3 flex-wrap">
+        <div className="sticky top-0 z-10 bg-[#0f172a] border-b border-[#334155] px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2 sm:gap-3 flex-wrap">
+          <button onClick={() => setSidebarOpen(true)}
+            className="md:hidden px-3 py-1.5 rounded-lg bg-[#1e293b] text-slate-300 text-xs font-medium">
+            ☰ Habits
+          </button>
           <button onClick={prevMonth} className="w-8 h-8 rounded-lg bg-[#1e293b] hover:bg-[#334155] text-slate-300 flex items-center justify-center transition">‹</button>
-          <span className="font-bold text-white text-lg min-w-[180px] text-center">{MONTH_NAMES[currentMonth]} {currentYear}</span>
+          <span className="font-bold text-white text-base sm:text-lg text-center min-w-[120px] sm:min-w-[180px]">{MONTH_NAMES[currentMonth]} {currentYear}</span>
           <button onClick={nextMonth} className="w-8 h-8 rounded-lg bg-[#1e293b] hover:bg-[#334155] text-slate-300 flex items-center justify-center transition">›</button>
-          <div className="flex gap-1 ml-2 flex-wrap">
+          <div className="hidden lg:flex gap-1 ml-2 flex-wrap">
             {MONTH_NAMES.map((m, i) => (
               <button key={m} onClick={() => setCurrentMonth(i)}
                 className={`px-2 py-0.5 rounded text-xs transition ${currentMonth === i ? 'bg-cyan-500 text-white' : 'text-slate-400 hover:text-white'}`}>
@@ -223,7 +239,8 @@ export default function MonthlyView() {
             <label className="ml-auto flex items-center gap-2 text-xs text-slate-400 cursor-pointer select-none">
               <input type="checkbox" checked={!hideFuture} onChange={e => setHideFuture(!e.target.checked)}
                 className="accent-cyan-500" />
-              Show future days
+              <span className="hidden sm:inline">Show future days</span>
+              <span className="sm:hidden">Future</span>
             </label>
           )}
         </div>
@@ -244,7 +261,7 @@ export default function MonthlyView() {
           >
             <thead>
               <tr>
-                <th className="text-left text-slate-400 font-medium px-2 py-2 w-40 sticky left-0 bg-[#0f172a]">Habit</th>
+                <th className="text-left text-slate-400 font-medium px-2 py-2 w-24 sm:w-40 sticky left-0 bg-[#0f172a] z-10">Habit</th>
                 {weeks.map((wkDays, wi) => (
                   wkDays.map((d, di) => {
                     const dk = dateKey(currentYear, currentMonth, d);
@@ -268,10 +285,10 @@ export default function MonthlyView() {
             <tbody>
               {activeHabits.map((habit, rowIdx) => (
                 <tr key={habit.id} className="border-t border-[#1e293b] group">
-                  <td className="sticky left-0 bg-[#0f172a] group-hover:bg-[#0f1f38] px-2 py-1">
-                    <div className="flex items-center gap-2">
+                  <td className="sticky left-0 bg-[#0f172a] group-hover:bg-[#0f1f38] px-2 py-1 z-10">
+                    <div className="flex items-center gap-2 max-w-[6rem] sm:max-w-none">
                       <span>{habit.emoji}</span>
-                      <span className="text-slate-200 truncate">{habit.name}</span>
+                      <span className="text-slate-200 truncate hidden sm:inline">{habit.name}</span>
                     </div>
                   </td>
                   {weeks.map((wkDays, wi) =>
@@ -327,17 +344,21 @@ export default function MonthlyView() {
                         {isFuture ? (
                           <div className="w-7 h-7 mx-auto flex items-center justify-center text-slate-700 text-xs">—</div>
                         ) : (
-                          <div className="relative group/mood">
-                            <div className="w-7 h-7 mx-auto rounded-md flex items-center justify-center text-sm cursor-pointer bg-[#1e293b] hover:bg-[#334155]"
+                          <div className="relative">
+                            <button
+                              onClick={() => setMoodPicker(moodPicker === dk ? null : dk)}
+                              className="w-7 h-7 mx-auto rounded-md flex items-center justify-center text-sm cursor-pointer bg-[#1e293b] hover:bg-[#334155]"
                               title={val ? MOOD_EMOJIS[val-1] : 'Set mood'}>
                               {val ? <span className="text-base">{MOOD_EMOJIS[val-1]}</span> : <span className="text-slate-600 text-xs">+</span>}
-                            </div>
-                            <div className="absolute top-8 left-1/2 -translate-x-1/2 hidden group-hover/mood:flex z-20 bg-[#0f172a] border border-[#334155] rounded-xl p-2 gap-1 shadow-xl">
-                              {MOOD_EMOJIS.map((e, i) => (
-                                <button key={i} onClick={() => setMood(dk, i+1)}
-                                  className={`text-lg hover:scale-125 transition ${val === i+1 ? 'scale-125' : ''}`}>{e}</button>
-                              ))}
-                            </div>
+                            </button>
+                            {moodPicker === dk && (
+                              <div className="absolute top-8 left-1/2 -translate-x-1/2 flex z-20 bg-[#0f172a] border border-[#334155] rounded-xl p-2 gap-1 shadow-xl fade-in">
+                                {MOOD_EMOJIS.map((e, i) => (
+                                  <button key={i} onClick={() => { setMood(dk, i+1); setMoodPicker(null); }}
+                                    className={`text-lg hover:scale-125 transition ${val === i+1 ? 'scale-125' : ''}`}>{e}</button>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         )}
                       </td>

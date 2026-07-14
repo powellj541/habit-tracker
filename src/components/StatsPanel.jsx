@@ -206,11 +206,11 @@ export default function StatsPanel() {
   };
 
   return (
-    <div className="h-full overflow-y-auto p-6 space-y-6">
+    <div className="h-full overflow-y-auto p-4 sm:p-6 space-y-6">
       <h2 className="text-xl font-bold text-white">{MONTH_NAMES[currentMonth]} {currentYear} — Stats</h2>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
           { label: 'Total Goal', value: totalGoal, color: 'text-slate-300' },
           { label: 'Completed', value: totalDone, color: 'text-cyan-400' },
@@ -243,9 +243,9 @@ export default function StatsPanel() {
       </div>
 
       {/* Charts row */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Daily bar */}
-        <div className="col-span-2 bg-[#1e293b] rounded-2xl p-4">
+        <div className="lg:col-span-2 bg-[#1e293b] rounded-2xl p-4">
           <div className="text-sm font-semibold text-slate-300 mb-3">Daily Completion %</div>
           <ResponsiveContainer width="100%" height={160}>
             <BarChart data={dailyData} margin={{ top: 0, right: 0, bottom: 0, left: -20 }}>
@@ -332,7 +332,7 @@ export default function StatsPanel() {
       {/* Per-habit leaderboard */}
       <div className="bg-[#1e293b] rounded-2xl p-4">
         <div className="text-sm font-semibold text-slate-300 mb-3">Habit Leaderboard</div>
-        <div className="space-y-3">
+        <div className="space-y-3 overflow-x-auto min-w-0 [&>div]:min-w-[540px]">
           {habitStats.map((h, i) => (
             <div key={h.id} className="grid grid-cols-[2rem_1fr_4rem_4rem_4rem_8rem_4rem] items-center gap-3 text-sm">
               <span className="text-slate-500 font-mono text-xs text-center">{i+1}</span>
@@ -351,7 +351,7 @@ export default function StatsPanel() {
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-[2rem_1fr_4rem_4rem_4rem_8rem_4rem] gap-3 mt-2 text-[10px] text-slate-600 border-t border-[#334155] pt-2">
+        <div className="hidden sm:grid grid-cols-[2rem_1fr_4rem_4rem_4rem_8rem_4rem] gap-3 mt-2 text-[10px] text-slate-600 border-t border-[#334155] pt-2">
           <span/>
           <span/>
           <span className="text-center">Goal</span>
@@ -365,7 +365,7 @@ export default function StatsPanel() {
       {/* Streak table */}
       <div className="bg-[#1e293b] rounded-2xl p-4">
         <div className="text-sm font-semibold text-slate-300 mb-3">Streaks</div>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {habitStats.map(h => (
             <div key={h.id} className="bg-[#0f172a] rounded-xl p-3 flex items-center gap-3">
               <span className="text-xl">{h.emoji}</span>

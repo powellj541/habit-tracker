@@ -14,10 +14,10 @@ function getGreeting() {
 }
 
 const TABS = [
-  { id: 'monthly', label: '📅 Monthly' },
-  { id: 'stats', label: '📊 Stats' },
-  { id: 'weekly', label: '🗓 Weekly' },
-  { id: 'settings', label: '⚙️ Settings' },
+  { id: 'monthly', emoji: '📅', label: 'Monthly' },
+  { id: 'stats', emoji: '📊', label: 'Stats' },
+  { id: 'weekly', emoji: '🗓', label: 'Weekly' },
+  { id: 'settings', emoji: '⚙️', label: 'Settings' },
 ];
 
 function Layout() {
@@ -26,62 +26,55 @@ function Layout() {
   const [showStats, setShowStats] = useState(false);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#0f172a', color: 'white', overflow: 'hidden' }}>
+    <div className="flex flex-col h-dvh bg-[#0f172a] text-white overflow-hidden">
       {/* Header */}
-      <header style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem 1.5rem', background: '#1e293b', borderBottom: '1px solid #334155', flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <span style={{ fontSize: '1.5rem' }}>🔥</span>
-          <div>
-            <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{getGreeting()},</div>
-            <div style={{ fontSize: '1.1rem', fontWeight: 700, lineHeight: 1.2 }}>{name}</div>
+      <header className="flex items-center gap-2 sm:gap-4 px-3 sm:px-6 py-2 sm:py-3 bg-[#1e293b] border-b border-[#334155] shrink-0">
+        <div className="hidden sm:flex items-center gap-3 min-w-0">
+          <span className="text-2xl">🔥</span>
+          <div className="min-w-0">
+            <div className="text-xs text-slate-400 truncate">{getGreeting()},</div>
+            <div className="text-lg font-bold leading-tight truncate">{name}</div>
           </div>
         </div>
+        <span className="sm:hidden text-xl">🔥</span>
 
-        <nav style={{ display: 'flex', gap: '0.25rem', marginLeft: '2rem' }}>
+        <nav className="flex gap-1 sm:ml-6 flex-1 justify-center sm:justify-start">
           {TABS.map(t => (
             <button key={t.id} onClick={() => setActiveTab(t.id)}
-              style={{
-                padding: '0.375rem 1rem', borderRadius: '0.75rem', fontSize: '0.875rem',
-                fontWeight: 500, border: 'none', cursor: 'pointer', transition: 'all 0.15s',
-                background: activeTab === t.id ? '#06b6d4' : 'transparent',
-                color: activeTab === t.id ? 'white' : '#94a3b8',
-              }}
-              onMouseEnter={e => { if (activeTab !== t.id) { e.target.style.background = '#334155'; e.target.style.color = 'white'; } }}
-              onMouseLeave={e => { if (activeTab !== t.id) { e.target.style.background = 'transparent'; e.target.style.color = '#94a3b8'; } }}
-            >{t.label}</button>
+              className={`px-3 sm:px-4 py-1.5 rounded-xl text-sm font-medium transition whitespace-nowrap
+                ${activeTab === t.id ? 'bg-cyan-500 text-white' : 'text-slate-400 hover:text-white hover:bg-[#334155]'}`}>
+              <span>{t.emoji}</span>
+              <span className="hidden sm:inline ml-1.5">{t.label}</span>
+            </button>
           ))}
         </nav>
 
         {activeTab === 'monthly' && (
           <button onClick={() => setShowStats(s => !s)}
-            style={{
-              marginLeft: 'auto', padding: '0.375rem 1rem', borderRadius: '0.75rem',
-              fontSize: '0.875rem', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
-              background: showStats ? '#8b5cf6' : '#334155',
-              color: 'white',
-            }}>
+            className={`hidden lg:block ml-auto px-4 py-1.5 rounded-xl text-sm transition
+              ${showStats ? 'bg-purple-500 text-white' : 'bg-[#334155] text-slate-300 hover:text-white'}`}>
             {showStats ? 'Hide Stats ▶' : '◀ Stats'}
           </button>
         )}
       </header>
 
       {/* Content */}
-      <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
+      <div className="flex flex-1 min-h-0 overflow-hidden">
         {activeTab === 'monthly' && (
           <>
-            <div style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+            <div className="flex-1 min-w-0 overflow-hidden">
               <MonthlyView />
             </div>
             {showStats && (
-              <div style={{ width: '480px', flexShrink: 0, borderLeft: '1px solid #334155', overflow: 'hidden' }}>
+              <div className="hidden lg:block w-[480px] shrink-0 border-l border-[#334155] overflow-hidden">
                 <StatsPanel />
               </div>
             )}
           </>
         )}
-        {activeTab === 'stats' && <div style={{ flex: 1, overflow: 'hidden' }}><StatsPanel /></div>}
-        {activeTab === 'weekly' && <div style={{ flex: 1, overflow: 'hidden' }}><WeeklyView /></div>}
-        {activeTab === 'settings' && <div style={{ flex: 1, overflow: 'hidden' }}><SettingsPage /></div>}
+        {activeTab === 'stats' && <div className="flex-1 min-w-0 overflow-hidden"><StatsPanel /></div>}
+        {activeTab === 'weekly' && <div className="flex-1 min-w-0 overflow-hidden"><WeeklyView /></div>}
+        {activeTab === 'settings' && <div className="flex-1 min-w-0 overflow-hidden"><SettingsPage /></div>}
       </div>
     </div>
   );
