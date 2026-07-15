@@ -62,6 +62,7 @@ export function createDefaultData() {
     weeklyAffirmation: {}, // { 'YYYY-Www': string }
     weeklyReward: {},
     tasks: {},        // { 'YYYY-MM-DD': [{id, text, done}] }
+    journal: {},      // { 'YYYY-MM-DD': { text, gratitude, manifestation } }
     settings: {
       userName: 'Joseph',
       weekStart: 'sunday',

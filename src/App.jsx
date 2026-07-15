@@ -3,6 +3,7 @@ import MonthlyView from './components/MonthlyView';
 import StatsPanel from './components/StatsPanel';
 import WeeklyView from './components/WeeklyView';
 import SettingsPage from './components/SettingsPage';
+import JournalView from './components/JournalView';
 import { useState } from 'react';
 import './index.css';
 
@@ -17,6 +18,7 @@ const TABS = [
   { id: 'monthly', emoji: '📅', label: 'Monthly' },
   { id: 'stats', emoji: '📊', label: 'Stats' },
   { id: 'weekly', emoji: '🗓', label: 'Weekly' },
+  { id: 'journal', emoji: '📓', label: 'Journal' },
   { id: 'settings', emoji: '⚙️', label: 'Settings' },
 ];
 
@@ -74,6 +76,7 @@ function Layout() {
         )}
         {activeTab === 'stats' && <div className="flex-1 min-w-0 overflow-hidden"><StatsPanel /></div>}
         {activeTab === 'weekly' && <div className="flex-1 min-w-0 overflow-hidden"><WeeklyView /></div>}
+        {activeTab === 'journal' && <div className="flex-1 min-w-0 overflow-hidden"><JournalView /></div>}
         {activeTab === 'settings' && <div className="flex-1 min-w-0 overflow-hidden"><SettingsPage /></div>}
       </div>
     </div>

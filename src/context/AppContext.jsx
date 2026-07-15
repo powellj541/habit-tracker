@@ -99,6 +99,14 @@ export function AppProvider({ children }) {
     });
   }, [update]);
 
+  const setJournal = useCallback((dateKey, changes) => {
+    update(d => {
+      if (!d.journal) d.journal = {};
+      d.journal[dateKey] = { ...(d.journal[dateKey] || {}), ...changes };
+      return d;
+    });
+  }, [update]);
+
   const updateSettings = useCallback((changes) => {
     update(d => { d.settings = { ...d.settings, ...changes }; return d; });
   }, [update]);
@@ -135,7 +143,7 @@ export function AppProvider({ children }) {
       toggleHabit, setMood, setSleep,
       addHabit, editHabit, deleteHabit, reorderHabits,
       setWeeklyFocus, setWeeklyAffirmation, setWeeklyReward,
-      addTask, toggleTask, deleteTask,
+      addTask, toggleTask, deleteTask, setJournal,
       updateSettings, resetData, restoreData,
     }}>
       {children}
